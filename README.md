@@ -9,6 +9,7 @@
 |事务一语句|事务二语句|事务一等待锁|事务二等待锁|事务二持有锁|案例|
 |---------|-----------|---------|-----------|-----------|---|
 |insert|insert|lock_mode X insert intention|lock_mode X insert intention|lock_mode X|1|
+|insert|insert|lock_mode X locks gap before rec insert intention|lock_mode X locks gap before rec insert intention|lock_mode X locks gap before rec|14|
 |insert|insert|lock_mode X insert intention|lock_mode X insert intention|lock_mode S|2|
 |delete|delete|lock_mode X|lock mode S|lock_mode X locks rec but not gap|4|
 |delete|delete|lock_mode X|lock mode X|lock_mode X locks rec but not gap|6|
