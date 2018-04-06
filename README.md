@@ -11,6 +11,7 @@
 |insert|insert|lock_mode X insert intention|lock_mode X insert intention|lock_mode X|1|
 |insert|insert|lock_mode X locks gap before rec insert intention|lock_mode X locks gap before rec insert intention|lock_mode X locks gap before rec|14|
 |insert|insert|lock_mode X insert intention|lock_mode X insert intention|lock_mode S|2|
+|insert|insert|lock mode S|lock_mode X locks gap before rec insert intention|lock_mode X locks rec but not gap|15|
 |delete|delete|lock_mode X|lock mode S|lock_mode X locks rec but not gap|4|
 |delete|delete|lock_mode X|lock mode X|lock_mode X locks rec but not gap|6|
 |delete|delete|lock_mode X locks rec but not gap|lock_mode X|lock_mode X|3|
