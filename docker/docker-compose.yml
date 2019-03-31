@@ -1,0 +1,13 @@
+version: '2.1'
+services:
+    dldb:
+        container_name: dldb
+        image: mysql:5.7
+        volumes:
+         - ./db:/docker-entrypoint-initdb.d
+         - ./conf/mysqld.cnf:/etc/mysql/mysql.conf.d/mysqld.cnf
+        environment:
+         - MYSQL_ROOT_PASSWORD=123456
+        ports:
+         - 53306:3306
+        command: ['mysqld', '--character-set-server=utf8', '--collation-server=utf8_general_ci']
