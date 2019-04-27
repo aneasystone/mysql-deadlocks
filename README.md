@@ -31,3 +31,89 @@
 对每一个死锁场景，我都会定义一个死锁名称（实际上就是事务等待和持有的锁），每一篇分析，我都分成了 死锁特征、死锁日志、表结构、重现步骤、分析和参考 这几个部分。
 
 对于这种分类方法我感觉并不是很好，但也想不出什么其他更好的方案，如果你有更好的建议，欢迎讨论。另外，如果你有新的死锁案例，或者对某个死锁的解释有异议，欢迎给我提 Issue 或 PR。
+
+## 死锁重现
+
+docker 目录下包含了各个死锁重现的测试脚本，测试步骤如下：
+
+1. 创建数据库和初始数据
+
+```
+# cd docker
+# docker-compose up -d
+```
+
+确保机器上安装了 docker 和 docker-compose，上面的命令会启动一个 mysql:5.7 的容器，并创建一个名为 dldb 的数据库，初始密码为 123456，并通过 `docker-entrypoint-initdb.d` 初始化所有案例所需要的表和数据。
+
+2. 等待容器启动结束
+
+```
+# docker logs -f dldb
+```
+
+使用 `dockere logs` 查看容器启动日志，如果出现数据初始化完成的提示，如下所示，则进入下一步。
+
+```
+MySQL init process in progress...
+Warning: Unable to load '/usr/share/zoneinfo/iso3166.tab' as time zone. Skipping it.
+Warning: Unable to load '/usr/share/zoneinfo/leap-seconds.list' as time zone. Skipping it.
+Warning: Unable to load '/usr/share/zoneinfo/zone.tab' as time zone. Skipping it.
+Warning: Unable to load '/usr/share/zoneinfo/zone1970.tab' as time zone. Skipping it.
+
+/usr/local/bin/docker-entrypoint.sh: running /docker-entrypoint-initdb.d/t16.sql
+mysql: [Warning] Using a password on the command line interface can be insecure.
+
+/usr/local/bin/docker-entrypoint.sh: running /docker-entrypoint-initdb.d/t18.sql
+mysql: [Warning] Using a password on the command line interface can be insecure.
+
+/usr/local/bin/docker-entrypoint.sh: running /docker-entrypoint-initdb.d/t8.sql
+mysql: [Warning] Using a password on the command line interface can be insecure.
+
+MySQL init process done. Ready for start up.
+```
+
+3. 进入容器执行测试脚本
+
+首先进入容器：
+
+```
+# docker exec -it dldb bash
+```
+
+然后执行测试脚本，测试脚本在每一个案例对应的 SQL 文件中，比如案例 18 对应的测试脚本如下：
+
+```
+# mysqlslap --create-schema dldb -q "begin; delete from t18 where id = 4; insert into t18 (id) values (4); rollback;" --number-of-queries=100000 -uroot -p123456 &
+# mysqlslap --create-schema dldb -q "begin; delete from t18 where id = 4; rollback;" --number-of-queries=100000 -uroot -p123456 &
+```
+
+测试脚本通过 `mysqlslap` 工具并发执行两个事务，每个事务执行 N 次（N = 100000），如果两个事务会出现死锁，则我们可以通过死锁日志看到。
+
+4. 检查是否出现死锁日志
+
+```
+# tail -f /var/log/mysql/error.log
+```
+
+## TODO
+
+- [ ] 重现案例 1
+- [ ] 重现案例 2
+- [ ] 重现案例 3
+- [ ] 重现案例 4
+- [ ] 重现案例 5
+- [ ] 重现案例 6
+- [ ] 重现案例 7
+- [x] 重现案例 8
+- [ ] 重现案例 9
+- [ ] 重现案例 10
+- [ ] 重现案例 11
+- [ ] 重现案例 12
+- [ ] 重现案例 13
+- [ ] 重现案例 14
+- [ ] 重现案例 15
+- [x] 重现案例 16
+- [ ] 重现案例 17
+- [x] 重现案例 18
+- [ ] 由于相同的测试脚本在并发的时候可能产生不同的死锁，后续可以写个脚本来解析 error.log 看看发生了多少次死锁
+- [ ] 使用 mysqlslap 测试不太方面，后续可以写个脚本来模拟并发事务
