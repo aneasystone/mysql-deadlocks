@@ -12,6 +12,7 @@
 |insert|insert|lock_mode X locks gap before rec insert intention|lock_mode X locks gap before rec insert intention|lock_mode X locks gap before rec|14|
 |insert|insert|lock_mode X insert intention|lock_mode X insert intention|lock_mode S|2|
 |insert|insert|lock mode S|lock_mode X locks gap before rec insert intention|lock_mode X locks rec but not gap|15|
+|delete|insert|lock_mode X locks rec but not gap|lock mode S|lock_mode X locks rec but not gap|18|
 |delete|delete|lock_mode X|lock mode S|lock_mode X locks rec but not gap|4|
 |delete|delete|lock_mode X|lock mode X|lock_mode X locks rec but not gap|6|
 |delete|delete|lock_mode X locks rec but not gap|lock_mode X|lock_mode X|3|
@@ -24,7 +25,6 @@
 |update|update|lock_mode X locks rec but not gap|lock mode S|lock_mode X locks rec but not gap|11|
 |update|update|lock_mode X|lock_mode X locks gap before rec insert intention|lock_mode X locks rec but not gap|16|
 |update|update|lock_mode X locks gap before rec insert intention|lock_mode X locks gap before rec insert intention|lock_mode X|17|
-|delete|insert|lock mode S|lock_mode X locks rec but not gap||18|
 
 表中的语句虽然大多数只列出了 delete 和 insert，但实际上绝大多数的 delete 语句和 update 或 select ... for update 加锁机制是一样的，所以为了避免重复，对于 update 语句就不在一起汇总了（当然也有例外，譬如使用 update 对索引进行更新时加锁机制和 delete 是有区别的，这种情况我会单独列出，如案例 11）。
 
