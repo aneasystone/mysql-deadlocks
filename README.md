@@ -8,23 +8,23 @@
 
 |事务一语句|事务二语句|事务一等待锁|事务二等待锁|事务二持有锁|案例|
 |---------|-----------|---------|-----------|-----------|---|
-|insert|insert|lock_mode X insert intention|lock_mode X insert intention|lock_mode X|1|
-|insert|insert|lock_mode X locks gap before rec insert intention|lock_mode X locks gap before rec insert intention|lock_mode X locks gap before rec|14|
-|insert|insert|lock_mode X insert intention|lock_mode X insert intention|lock_mode S|2|
-|insert|insert|lock mode S|lock_mode X locks gap before rec insert intention|lock_mode X locks rec but not gap|15|
-|delete|insert|lock_mode X locks rec but not gap|lock mode S|lock_mode X locks rec but not gap|18|
-|delete|delete|lock_mode X|lock mode S|lock_mode X locks rec but not gap|4|
-|delete|delete|lock_mode X|lock mode X|lock_mode X locks rec but not gap|6|
-|delete|delete|lock_mode X locks rec but not gap|lock_mode X|lock_mode X|3|
-|delete|delete|lock_mode X locks rec but not gap|lock mode X|lock_mode X locks rec but not gap|7|
-|delete|delete|lock_mode X locks rec but not gap|lock_mode X locks rec but not gap|lock_mode X locks rec but not gap|8,9|
-|delete|insert|lock_mode X|lock_mode X locks gap before rec insert intention|lock_mode X locks rec but not gap|5|
-|delete|insert|lock_mode X|lock_mode X locks gap before rec insert intention|lock_mode S|10|
-|delete|insert|lock_mode X|lock_mode X locks gap before rec insert intention|lock_mode X|12|
-|delete|insert|lock_mode X|lock mode S|lock_mode X locks rec but not gap|13|
-|update|update|lock_mode X locks rec but not gap|lock mode S|lock_mode X locks rec but not gap|11|
-|update|update|lock_mode X|lock_mode X locks gap before rec insert intention|lock_mode X locks rec but not gap|16|
-|update|update|lock_mode X locks gap before rec insert intention|lock_mode X locks gap before rec insert intention|lock_mode X|17|
+|insert|insert|lock_mode X insert intention|lock_mode X insert intention|lock_mode X|[1](https://github.com/aneasystone/mysql-deadlocks/blob/master/1.md)|
+|insert|insert|lock_mode X locks gap before rec insert intention|lock_mode X locks gap before rec insert intention|lock_mode X locks gap before rec|[14](https://github.com/aneasystone/mysql-deadlocks/blob/master/14.md)|
+|insert|insert|lock_mode X insert intention|lock_mode X insert intention|lock_mode S|[2](https://github.com/aneasystone/mysql-deadlocks/blob/master/2.md)|
+|insert|insert|lock mode S|lock_mode X locks gap before rec insert intention|lock_mode X locks rec but not gap|[15](https://github.com/aneasystone/mysql-deadlocks/blob/master/15.md)|
+|delete|insert|lock_mode X locks rec but not gap|lock mode S|lock_mode X locks rec but not gap|[18](https://github.com/aneasystone/mysql-deadlocks/blob/master/18.md)|
+|delete|delete|lock_mode X|lock mode S|lock_mode X locks rec but not gap|[4](https://github.com/aneasystone/mysql-deadlocks/blob/master/4.md)|
+|delete|delete|lock_mode X|lock mode X|lock_mode X locks rec but not gap|[6](https://github.com/aneasystone/mysql-deadlocks/blob/master/6.md)|
+|delete|delete|lock_mode X locks rec but not gap|lock_mode X|lock_mode X|[3](https://github.com/aneasystone/mysql-deadlocks/blob/master/3.md)|
+|delete|delete|lock_mode X locks rec but not gap|lock mode X|lock_mode X locks rec but not gap|[7](https://github.com/aneasystone/mysql-deadlocks/blob/master/7.md)|
+|delete|delete|lock_mode X locks rec but not gap|lock_mode X locks rec but not gap|lock_mode X locks rec but not gap|[8](https://github.com/aneasystone/mysql-deadlocks/blob/master/8.md),[9](https://github.com/aneasystone/mysql-deadlocks/blob/master/9.md)|
+|delete|insert|lock_mode X|lock_mode X locks gap before rec insert intention|lock_mode X locks rec but not gap|[5](https://github.com/aneasystone/mysql-deadlocks/blob/master/5.md)|
+|delete|insert|lock_mode X|lock_mode X locks gap before rec insert intention|lock_mode S|[10](https://github.com/aneasystone/mysql-deadlocks/blob/master/10.md)|
+|delete|insert|lock_mode X|lock_mode X locks gap before rec insert intention|lock_mode X|[12](https://github.com/aneasystone/mysql-deadlocks/blob/master/12.md)|
+|delete|insert|lock_mode X|lock mode S|lock_mode X locks rec but not gap|[13](https://github.com/aneasystone/mysql-deadlocks/blob/master/13.md)|
+|update|update|lock_mode X locks rec but not gap|lock mode S|lock_mode X locks rec but not gap|[11](https://github.com/aneasystone/mysql-deadlocks/blob/master/11.md)|
+|update|update|lock_mode X|lock_mode X locks gap before rec insert intention|lock_mode X locks rec but not gap|[16](https://github.com/aneasystone/mysql-deadlocks/blob/master/16.md)|
+|update|update|lock_mode X locks gap before rec insert intention|lock_mode X locks gap before rec insert intention|lock_mode X|[17](https://github.com/aneasystone/mysql-deadlocks/blob/master/17.md)|
 
 表中的语句虽然大多数只列出了 delete 和 insert，但实际上绝大多数的 delete 语句和 update 或 select ... for update 加锁机制是一样的，所以为了避免重复，对于 update 语句就不在一起汇总了（当然也有例外，譬如使用 update 对索引进行更新时加锁机制和 delete 是有区别的，这种情况我会单独列出，如案例 11）。
 
